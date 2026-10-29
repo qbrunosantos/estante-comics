@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Configurar ambiente Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: 'zulu'
           java-version: '17'
@@ -24,11 +24,14 @@ jobs:
       - name: Configurar SDK do Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.19.x'
+          flutter-version: '3.22.x'
           channel: 'stable'
 
-      - name: Gerar estrutura nativa do Android
-        run: flutter create --platforms=android .
+      - name: Gerar e configurar projeto nativo do Android
+        run: |
+          flutter create --org com.leitor.app --project-name leitor_quadrinhos .
+          sed -i 's/minSdkVersion .*/minSdkVersion 21/g' android/app/build.gradle || true
+          sed -i 's/flutter.minSdkVersion/21/g' android/app/build.gradle || true
 
       - name: Instalar dependencias
         run: flutter pub get
